@@ -1,0 +1,17 @@
+.env
+*.env
+
+
+memory.txt
+
+__pycache__/
+
+*.pyc
+venv/
+.venv/
+
+.vscode/
+.idea/
+check_avail_mod.py
+
+models.txt
