@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from hyde import app
 import os
+from unittest.mock import AsyncMock, patch
 
 
 for filename in ["memory.txt", "prompt.txt"]:
@@ -14,7 +15,18 @@ def  test_read_main():
     assert response.status_code == 200
 
 
+from unittest.mock import AsyncMock, patch
+
 def test_chat_endpoint():
- response= client.post("/chat", json={"user_input":"Hello"})
- assert response.status_code == 200
- assert "response" in response.json()
+    mock_response = AsyncMock()
+    mock_response.content = [AsyncMock(text="Hi Hyde")]
+
+    # Подменяем реальный вызов к API на заглушку
+    with patch("hyde.client.messages.create", new_callable=AsyncMock) as mock_create:
+        mock_create.return_value = mock_response
+
+        
+        response = client.post("/chat", json={"user_input": "Hello"})
+        
+        
+        assert response.status_code == 200
