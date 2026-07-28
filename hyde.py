@@ -26,7 +26,6 @@ async def chat(request: Request):
     user_input = data.get("user_input", "")
     history = data.get("history", [])
 
-    # Считываем системную инструкцию
     with open("prompt.txt", "r", encoding="utf-8") as f:
         system_prompt = f.read()
 
@@ -36,16 +35,16 @@ async def chat(request: Request):
 
     full=f"{system_prompt}\n\n{memory_data}"
 
-    # Собираем историю диалога для Claude
+    #messages from the last 15 interactions
     messages = []
     for mes in history[-15:]:
         role = "user" if mes["role"] == "user" else "assistant"
         messages.append({"role": role, "content": mes["content"]})
 
-    # Добавляем новое сообщение
+    
     messages.append({"role": "user", "content": user_input})
 
-    # Запрос к Claude 3.5 Sonnet
+    
     response = await client.messages.create(
         model="claude-sonnet-4-6",  #Claude-opus-4-8
         max_tokens=1000,
@@ -56,7 +55,7 @@ async def chat(request: Request):
 
     bot_reply = response.content[0].text
 
-    # Обновляем историю для возврата на фронт
+    
     history.append({"role": "user", "content": user_input})
     history.append({"role": "assistant", "content": bot_reply})
 
