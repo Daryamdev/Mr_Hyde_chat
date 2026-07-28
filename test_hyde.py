@@ -1,6 +1,12 @@
 from fastapi.testclient import TestClient
 from hyde import app
+import os
 
+
+for filename in ["memory.txt", "prompt.txt"]:
+    if not os.path.exists(filename):
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write("")
 client= TestClient(app)
 
 def  test_read_main():
